@@ -1,47 +1,123 @@
-Ash: 轮椅侠
-Atlas: 土甲
-Banshee: 音妈
-Baruuk: 和尚
-Chroma: 龙甲
-Ember: 火鸡
-Equinox: 阴阳，扶她，扶他
-Excalibur: 咖喱棒
-Frost: 冰甲，冰队
-Gara: 玻璃甲
-Garuda: 血妈，血甲
-Gauss: 高斯，跑甲，跑男
-Grendel: 肥宅甲
-Harrow: 主教
-Hildryn: 母牛
-Hydroid: 水男，船长
-Inaros: 沙甲，骆驼
-Ivara: 弓妹
-Khora: 猫甲
-Lavos: 炼金甲
-Limbo: 李明博，小明
-Loki: 洛基
-Mag: 磁妹
-Mesa: 女枪
-Mirage: 小丑
-Nekros: 摸尸
-Nezha: 哪吒
-Nidus: 蛆甲
-Nova: 诺娃
-Nyx: 脑瘀血
-Oberon: 奶牛，牛爸
-Octavia: 音妈，音乐甲，DJ
-Protea: 茶妹
-Revenant: 夜灵甲
-Rhino: 犀牛
-Saryn: 毒妈
-Sevagoth: 幽灵甲，亡灵甲
-Titania: 蝶妹
-Trinity: 奶妈
-Valkyr: 女汉子
-Vauban: 工程
-Volt: 电男
-Wisp: 花甲，花妈
-Wukong: 悟空，猴子，猴甲
-Xaku: 瞎酷，瞎哭，虚空甲
-Yareli: 水甲，水妹
-Zephyr: 鸟甲，小鸟
+Ash:
+  - 轮椅侠
+  - 阿屎
+Atlas:
+  - 土
+  - 一拳
+Banshee:
+  - 音妈
+Baruuk:
+  - 和尚
+Chroma:
+  - 龙
+Ember:
+  - 火鸡
+Equinox:
+  - 阴阳
+  - 阴阳
+  - 扶她
+  - 扶他
+Excalibur:
+  - 咖喱棒
+  - 咖喱
+Frost:
+  - 冰
+  - 冰队
+  - 冰男
+Gara:
+  - 玻璃
+Garuda:
+  - 血妈
+  - 血
+Gauss:
+  - 高斯
+  - 跑
+  - 跑男
+Grendel:
+  - 肥宅
+Harrow:
+  - 主教
+Hildryn:
+  - 母牛
+Hydroid:
+  - 水男
+  - 船长
+Inaros:
+  - 沙
+  - 骆驼
+Ivara:
+  - 弓妹
+Khora:
+  - 猫
+Lavos:
+  - 炼金
+  - 药水哥
+Limbo:
+  - 李明博
+  - 小明
+Loki:
+  - 洛基
+Mag:
+  - 磁妹
+Mesa:
+  - 女枪
+Mirage:
+  - 小丑
+Nekros:
+  - 摸尸
+Nezha:
+  - 哪吒
+Nidus:
+  - 蛆
+Nova:
+  - 诺娃
+Nyx:
+  - 脑瘀血
+Oberon:
+  - 奶牛
+  - 牛爸
+Octavia:
+  - 音乐
+  - DJ
+Protea:
+  - 茶妹
+Revenant:
+  - 夜灵
+Rhino:
+  - 犀牛
+  - 牛子
+  - 牛牛
+Saryn:
+  - 毒妈
+Sevagoth:
+  - 幽灵
+  - 亡灵
+Titania:
+  - 蝶妹
+Trinity:
+  - 奶妈
+Valkyr:
+  - 女汉子
+  - 瓦喵
+  - 瓦尔基里
+Vauban:
+  - 工程
+Volt:
+  - 电男
+Wisp:
+  - 花
+  - 花妈
+Wukong:
+  - 悟空
+  - 猴子
+  - 猴
+Xaku:
+  - 瞎酷
+  - 瞎哭
+  - 虚空
+Yareli:
+  - 水
+  - 水妹
+Zephyr:
+  - 鸟
+  - 小鸟

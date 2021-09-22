@@ -8,6 +8,7 @@ import (
 	"encoding/json"
 	"fmt"
 	_ "github.com/mattn/go-sqlite3"
+	"gopkg.in/yaml.v2"
 	"io/ioutil"
 	"net/http"
 	"sort"
@@ -26,7 +27,7 @@ func WMHandler(data map[string]interface{}) {
 	}
 
 	ret["group_id"] = groupId
-	ret["message"] = WMResponse(data)
+	ret["message"] = WMResponse(data["message"].(string))
 	retJson, err := json.Marshal(ret)
 	if err != nil {
 		helpers.AddLog("warframe.go: WMHandler", "marshal json", err)
@@ -36,8 +37,9 @@ func WMHandler(data map[string]interface{}) {
 	_, _ = http.Post(url, "application/json", bytes.NewBuffer(retJson))
 }
 
-func WMResponse(data map[string]interface{}) string {
-	name := data["message"].(string)
+func WMResponse(name string) string {
+	name = strings.Replace(name, " ", "", -1)
+	name = ProcessSpokenName(name)
 	if name == "name" {
 		nickNames, err := ioutil.ReadFile("./warframe/nick_names.yaml")
 		if err != nil {
@@ -74,21 +76,56 @@ func WMResponse(data map[string]interface{}) string {
 			}
 			ret += j.Name + "\n"
 		}
-		if ret[len(ret) - 1] == '\n' {
-			ret = ret[:len(ret) - 1]
+		if ret[len(ret)-1] == '\n' {
+			ret = ret[:len(ret)-1]
 		}
 		return ret
 	}
 	return "出问题了 :("
 }
 
+func ProcessSpokenName(name string) string {
+	name = strings.ToLower(name)
+
+	var nickNames map[string][]string
+	yamlFile, _ := ioutil.ReadFile("./warframe/nick_names.yaml")
+	_ = yaml.Unmarshal(yamlFile, &nickNames)
+	for key, value := range nickNames {
+		for _, nickName := range value {
+			name = strings.Replace(name, nickName+"甲", key+"prime", -1)
+			name = strings.Replace(name, nickName, key+"prime", -1)
+		}
+		if name == key {
+			name = name + "prime一套"
+			break
+		}
+	}
+
+	name = strings.Replace(name, "总图", "图", -1)
+	name = strings.Replace(name, "蓝图", "图", -1)
+	name = strings.Replace(name, "图", "蓝图", -1)
+
+	name = strings.Replace(name, "头部神经光元", "头", -1)
+	name = strings.Replace(name, "头", "头部神经光元", -1)
+
+	name = strings.Replace(name, "prime", "p", -1)
+	name = strings.Replace(name, "pp", "p", -1)
+	name = strings.Replace(name, "p", "prime", -1)
+	if strings.HasSuffix(name, "prime") {
+		name = name + "一套"
+	}
+	return name
+}
+
 type wmData struct {
-	OrderType string
-	Platinum int
-	Quantity int
+	OrderType  string
+	Platinum   int
+	Quantity   int
 	Reputation int
+	Status     string
 }
 type wmDataSlice []wmData
+
 func (a wmDataSlice) Len() int {
 	return len(a)
 }
@@ -96,6 +133,9 @@ func (a wmDataSlice) Swap(i, j int) {
 	a[i], a[j] = a[j], a[i]
 }
 func (a wmDataSlice) Less(i, j int) bool {
+	if a[i].Status == "ingame" && a[j].Status != "ingame" {
+		return true
+	}
 	if a[i].Platinum != a[j].Platinum {
 		return a[i].Platinum < a[j].Platinum
 	} else if a[i].Reputation != a[j].Reputation {
@@ -109,18 +149,30 @@ func parseWMResponse(urlName string) string {
 	data := requireWMData(urlName)
 	sort.Sort(wmDataSlice(data))
 	ret := "查找" + urlName + "的结果：\n" +
-		"白鸡 数量 名声 \n"
+		"白鸡 数量 名声 状态\n"
 	cnt := 0
 	for _, j := range data {
-		cnt++
-		if cnt >= 15 {
+		if cnt < 5 && j.Status != "ingame" {
+			continue
+		}
+		if cnt >= 5 && j.Status == "ingame" {
+			continue
+		}
+		if cnt >= 10 {
 			break
+		}
+		cnt++
+		status := j.Status
+		if j.Status == "ingame" {
+			status = "在线"
+		} else {
+			status = "离线"
 		}
 		ret += fmt.Sprintf("%-5d", j.Platinum) +
 			fmt.Sprintf("%-5d", j.Quantity) +
-			fmt.Sprintf("%-5d", j.Reputation) + "\n"
+			fmt.Sprintf("%-5d", j.Reputation) +
+			fmt.Sprintf("%-5s", status) + "\n"
 	}
-	ret += "白鸡 数量 名声 "
 	return ret
 }
 
@@ -181,13 +233,14 @@ func requireWMData(urlName string) []wmData {
 				helpers.AddLog("warframe.go: requireWMData", "turn json number to int64", err)
 				return nil
 			}
-			reputation, err := row["user"].
-				(map[string]interface{})["reputation"].(json.Number).Int64()
+			reputation, err := row["user"].(map[string]interface{})["reputation"].(json.Number).Int64()
+			status := row["user"].(map[string]interface{})["status"].(string)
 			retRow := wmData{
-				OrderType: "sell",
-				Platinum: int(platinum),
-				Quantity: int(quantity),
+				OrderType:  "sell",
+				Platinum:   int(platinum),
+				Quantity:   int(quantity),
 				Reputation: int(reputation),
+				Status:     status,
 			}
 			ret = append(ret, retRow)
 		}
@@ -196,10 +249,9 @@ func requireWMData(urlName string) []wmData {
 }
 
 type wmItem struct {
-	Id string
-	Name string
+	Id      string
+	Name    string
 	UrlName string
-	NickName string
 }
 
 func findWMItem(name string) []wmItem {
@@ -208,12 +260,12 @@ func findWMItem(name string) []wmItem {
 		helpers.AddLog("warframe.go: findWMItem", "open database", err)
 		return nil
 	}
-	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME) LIKE LOWER(?) OR LOWER(NICK_NAME) LIKE LOWER(?) ORDER BY NAME ASC")
+	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME) LIKE LOWER(?)")
 	if err != nil {
 		helpers.AddLog("warframe.go: findWMItem", "prepare query", err)
 		return nil
 	}
-	rows, err := prep.Query("%" + name + "%", "%" + name + "%")
+	rows, err := prep.Query("%" + name + "%")
 	if err != nil {
 		helpers.AddLog("warframe.go: findWMItem", "execute query", err)
 		return nil
@@ -222,7 +274,7 @@ func findWMItem(name string) []wmItem {
 	var ret []wmItem
 	for rows.Next() {
 		var row wmItem
-		err = rows.Scan(&row.Id, &row.Name, &row.UrlName, &row.NickName)
+		err = rows.Scan(&row.Id, &row.Name, &row.UrlName)
 		if err != nil {
 			helpers.AddLog("warframe.go: findWMItem", "scan rows", err)
 			return nil
