@@ -16,13 +16,15 @@ import (
 )
 
 func WMHandler(data map[string]interface{}) {
+	funcName := "market.go: WMHandler"
+
 	ret := make(map[string]interface{})
 	groupId, err := data["group_id"].(json.Number).Int64()
 	if err != nil {
-		helpers.AddLog("warframe.go: WMHandler", "turn json number to int64", err)
+		helpers.AddLog(funcName, "turn json number to int64", err)
 		return
 	}
-	if groupId != 692599380 {
+	if groupId != 692599380 && groupId != 681638989 {
 		return
 	}
 
@@ -30,7 +32,7 @@ func WMHandler(data map[string]interface{}) {
 	ret["message"] = WMResponse(data["message"].(string))
 	retJson, err := json.Marshal(ret)
 	if err != nil {
-		helpers.AddLog("warframe.go: WMHandler", "marshal json", err)
+		helpers.AddLog(funcName, "marshal json", err)
 		return
 	}
 	url := "http://127.0.0.1:5700/send_group_msg"
@@ -38,12 +40,14 @@ func WMHandler(data map[string]interface{}) {
 }
 
 func WMResponse(name string) string {
+	funcName := "market.go: WMResponse"
+
 	name = strings.Replace(name, " ", "", -1)
 	name = ProcessSpokenName(name)
 	if name == "name" {
 		nickNames, err := ioutil.ReadFile("./warframe/nick_names.yaml")
 		if err != nil {
-			helpers.AddLog("warframe.go: WMResponse", "read nick_names.yaml", err)
+			helpers.AddLog(funcName, "read nick_names.yaml", err)
 			return "出错了 :("
 		}
 		return string(nickNames)
@@ -111,7 +115,8 @@ func ProcessSpokenName(name string) string {
 	name = strings.Replace(name, "prime", "p", -1)
 	name = strings.Replace(name, "pp", "p", -1)
 	name = strings.Replace(name, "p", "prime", -1)
-	if strings.HasSuffix(name, "prime") {
+
+	if checkSetName(name) {
 		name = name + "一套"
 	}
 	return name
@@ -177,16 +182,18 @@ func parseWMResponse(urlName string) string {
 }
 
 func requireWMData(urlName string) []wmData {
+	funcName := "market.go: requireWMData"
+
 	url := "https://warframe.market/items/" + urlName
 	res, err := http.Get(url)
 	if err != nil {
-		helpers.AddLog("warframe.go: requireWMData", "http get", err)
+		helpers.AddLog(funcName, "http get", err)
 		return nil
 	}
 	defer error_handlers.CloseHttpResponse(res)
 	resHtmlBytes, err := ioutil.ReadAll(res.Body)
 	if err != nil {
-		helpers.AddLog("warframe.go: requireWMData", "read http response body", err)
+		helpers.AddLog(funcName, "read http response body", err)
 		return nil
 	}
 
@@ -210,7 +217,7 @@ func requireWMData(urlName string) []wmData {
 	decoder.UseNumber()
 	err = decoder.Decode(&data)
 	if err != nil {
-		helpers.AddLog("warframe.go: requireWMData", "decode json", err)
+		helpers.AddLog(funcName, "decode json", err)
 		return nil
 	}
 	data = data["payload"].(map[string]interface{})
@@ -225,12 +232,12 @@ func requireWMData(urlName string) []wmData {
 		if row["order_type"] == "sell" {
 			platinum, err := row["platinum"].(json.Number).Int64()
 			if err != nil {
-				helpers.AddLog("warframe.go: requireWMData", "turn json number to int64", err)
+				helpers.AddLog(funcName, "turn json number to int64", err)
 				return nil
 			}
 			quantity, err := row["quantity"].(json.Number).Int64()
 			if err != nil {
-				helpers.AddLog("warframe.go: requireWMData", "turn json number to int64", err)
+				helpers.AddLog(funcName, "turn json number to int64", err)
 				return nil
 			}
 			reputation, err := row["user"].(map[string]interface{})["reputation"].(json.Number).Int64()
@@ -255,19 +262,21 @@ type wmItem struct {
 }
 
 func findWMItem(name string) []wmItem {
+	funcName := "market.go: findWMItem"
+
 	db, err := sql.Open("sqlite3", "./warframe/database.db")
 	if err != nil {
-		helpers.AddLog("warframe.go: findWMItem", "open database", err)
+		helpers.AddLog(funcName, "open database", err)
 		return nil
 	}
 	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME) LIKE LOWER(?)")
 	if err != nil {
-		helpers.AddLog("warframe.go: findWMItem", "prepare query", err)
+		helpers.AddLog(funcName, "prepare query", err)
 		return nil
 	}
 	rows, err := prep.Query("%" + name + "%")
 	if err != nil {
-		helpers.AddLog("warframe.go: findWMItem", "execute query", err)
+		helpers.AddLog(funcName, "execute query", err)
 		return nil
 	}
 	defer error_handlers.CloseRows(rows)
@@ -276,10 +285,36 @@ func findWMItem(name string) []wmItem {
 		var row wmItem
 		err = rows.Scan(&row.Id, &row.Name, &row.UrlName)
 		if err != nil {
-			helpers.AddLog("warframe.go: findWMItem", "scan rows", err)
+			helpers.AddLog(funcName, "scan rows", err)
 			return nil
 		}
 		ret = append(ret, row)
 	}
 	return ret
+}
+
+func checkSetName(name string) bool {
+	funcName := "market.go: checkSetName"
+
+	db, err := sql.Open("sqlite3", "./warframe/database.db")
+	if err != nil {
+		helpers.AddLog(funcName, "open database", err)
+		return false
+	}
+	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME)=LOWER(?)")
+	if err != nil {
+		helpers.AddLog(funcName, "prepare query", err)
+		return false
+	}
+	rows, err := prep.Query(name + "一套")
+	if err != nil {
+		helpers.AddLog(funcName, "execute query", err)
+		return false
+	}
+	defer error_handlers.CloseRows(rows)
+	if rows.Next() {
+		return true
+	} else {
+		return false
+	}
 }

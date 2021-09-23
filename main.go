@@ -55,6 +55,11 @@ func receive(rw http.ResponseWriter, r *http.Request) {
 				"&message=[CQ:face,id=13]"
 			_, _ = http.Get(url)
 		}
+		if message == "循环" {
+			data["message"] = message[3:]
+			warframe.CycleHander(data)
+			return
+		}
 		if len(message) > 3 && strings.HasPrefix(message, "wm ") {
 			data["message"] = message[3:]
 			warframe.WMHandler(data)
