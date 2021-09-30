@@ -99,7 +99,7 @@ func ProcessSpokenName(name string) string {
 			name = strings.Replace(name, nickName+"甲", key+"prime", -1)
 			name = strings.Replace(name, nickName, key+"prime", -1)
 		}
-		if name == key {
+		if name == key+"prime" {
 			name = name + "prime一套"
 			break
 		}
