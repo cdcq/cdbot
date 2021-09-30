@@ -1,7 +1,6 @@
 package warframe
 
 import (
-	"bytes"
 	"cdbot/helpers"
 	"cdbot/helpers/error_handlers"
 	"database/sql"
@@ -14,30 +13,6 @@ import (
 	"sort"
 	"strings"
 )
-
-func WMHandler(data map[string]interface{}) {
-	funcName := "market.go: WMHandler"
-
-	ret := make(map[string]interface{})
-	groupId, err := data["group_id"].(json.Number).Int64()
-	if err != nil {
-		helpers.AddLog(funcName, "turn json number to int64", err)
-		return
-	}
-	if groupId != 692599380 && groupId != 681638989 {
-		return
-	}
-
-	ret["group_id"] = groupId
-	ret["message"] = WMResponse(data["message"].(string))
-	retJson, err := json.Marshal(ret)
-	if err != nil {
-		helpers.AddLog(funcName, "marshal json", err)
-		return
-	}
-	url := "http://127.0.0.1:5700/send_group_msg"
-	_, _ = http.Post(url, "application/json", bytes.NewBuffer(retJson))
-}
 
 func WMResponse(name string) string {
 	funcName := "market.go: WMResponse"
@@ -99,7 +74,7 @@ func ProcessSpokenName(name string) string {
 			name = strings.Replace(name, nickName+"甲", key+"prime", -1)
 			name = strings.Replace(name, nickName, key+"prime", -1)
 		}
-		if name == key+"prime" {
+		if name == strings.ToLower(key) {
 			name = name + "prime一套"
 			break
 		}
