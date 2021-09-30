@@ -22,7 +22,7 @@ func WFHandler(data map[string]interface{}) {
 	message := data["message"].(string)
 	if message == "循环" {
 		res = CycleResponse()
-	} else if message == "黃历" {
+	} else if message == "黄历" {
 		res = CalenderResponse()
 	} else if len(message) > 3 && strings.HasPrefix(message, "wm ") {
 		data["message"] = message[3:]
