@@ -44,25 +44,21 @@ func receive(rw http.ResponseWriter, r *http.Request) {
 	}
 	if data["message_type"] == "group" {
 		message := data["message"].(string)
+		groupId, err := data["group_id"].(json.Number).Int64()
+		if err != nil {
+			helpers.AddLog("main.go: receive", "turn json number to int64", err)
+			return
+		}
 		if message == "给爷笑一个" {
-			groupId, err := data["group_id"].(json.Number).Int64()
-			if err != nil {
-				helpers.AddLog("main.go: receive", "turn json number to int64", err)
-				return
-			}
 			url := "http://127.0.0.1:5700/send_group_msg" +
 				"?group_id=" + strconv.FormatInt(groupId, 10) +
 				"&message=[CQ:face,id=13]"
 			_, _ = http.Get(url)
-		}
-		if message == "循环" {
-			data["message"] = message[3:]
-			warframe.CycleHander(data)
 			return
 		}
-		if len(message) > 3 && strings.HasPrefix(message, "wm ") {
-			data["message"] = message[3:]
-			warframe.WMHandler(data)
+		config := helpers.LoadConfig()
+		if helpers.FindInI64Array(config.WFGroups, groupId) != -1 {
+			warframe.WFHandler(data)
 			return
 		}
 	}

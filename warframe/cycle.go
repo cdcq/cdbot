@@ -49,9 +49,9 @@ func CycleResponse() string {
 	minute := time.Now().In(loc).Minute()
 	status, hour, minute := getEarthTime(hour, minute)
 	if status == 0 {
-		ret = ret + "白天"
-	} else {
 		ret = ret + "黑夜"
+	} else {
+		ret = ret + "白天"
 	}
 	ret = ret + "\n" +
 		fmt.Sprintf("剩余 %02d 时 %02d 分\n", hour, minute)
