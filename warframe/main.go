@@ -27,10 +27,10 @@ func WFHandler(data map[string]interface{}) {
 		res = CalenderResponse()
 	} else if message == "信条" {
 		res = TenetResponse()
-	} else if len(message) > 6 && strings.HasPrefix(message, "信条更新\n") {
-		err := TenetUpdate(message[3:])
+	} else if len(message) > 14 && strings.HasPrefix(message, "信条更新\n") {
+		err := TenetUpdate(message[14:])
 		if err != nil {
-			res = "1"
+			res = "Updated."
 		} else {
 			res = fmt.Sprintf("error: " + err.Error())
 		}
