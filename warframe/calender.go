@@ -43,9 +43,9 @@ func CalenderResponse() string {
 	n1 := 2 + r.Int()%2
 	l1 := len(activities)
 	for i := 1; i <= n1; i++ {
-		chose := rand.Intn(l1)
+		chose := r.Intn(l1)
 		for helpers.FindInStringArray(chosen, activities[chose]) != -1 {
-			chose = rand.Intn(l1)
+			chose = r.Intn(l1)
 		}
 		chosen = append(chosen, activities[chose])
 		res += activities[chose] + " "
@@ -55,9 +55,9 @@ func CalenderResponse() string {
 	res += "忌：\n"
 	n2 := 2 + r.Int()%2
 	for i := 1; i <= n2; i++ {
-		chose := rand.Intn(l1)
+		chose := r.Intn(l1)
 		for helpers.FindInStringArray(chosen, activities[chose]) != -1 {
-			chose = rand.Intn(l1)
+			chose = r.Intn(l1)
 		}
 		chosen = append(chosen, activities[chose])
 		res += activities[chose] + " "
@@ -65,7 +65,7 @@ func CalenderResponse() string {
 	res += "\n"
 
 	res += "方位：\n" +
-		fmt.Sprintf("面向[%s]输出伤害最高\n", directions[r.Intn(len(directions))]) +
+		fmt.Sprintf("面向[%s]方向输出伤害最高\n", directions[r.Intn(len(directions))]) +
 		fmt.Sprintf("位于[%s]开核桃出金最多\n", places[r.Intn(len(places))]) +
 		"\n仅供娱乐，不做参考"
 	return res

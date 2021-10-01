@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"cdbot/helpers"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strings"
 )
@@ -24,6 +25,15 @@ func WFHandler(data map[string]interface{}) {
 		res = CycleResponse()
 	} else if message == "黄历" {
 		res = CalenderResponse()
+	} else if message == "信条" {
+		res = TenetResponse()
+	} else if len(message) > 6 && strings.HasPrefix(message, "信条更新\n") {
+		err := TenetUpdate(message[3:])
+		if err != nil {
+			res = "1"
+		} else {
+			res = fmt.Sprintf("error: " + err.Error())
+		}
 	} else if len(message) > 3 && strings.HasPrefix(message, "wm ") {
 		data["message"] = message[3:]
 		res = WMResponse(data["message"].(string))

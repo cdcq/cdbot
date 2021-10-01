@@ -239,7 +239,7 @@ type wmItem struct {
 func findWMItem(name string) []wmItem {
 	funcName := "market.go: findWMItem"
 
-	db, err := sql.Open("sqlite3", "./warframe/database.db")
+	db, err := sql.Open("sqlite3", "../database.db")
 	if err != nil {
 		helpers.AddLog(funcName, "open database", err)
 		return nil
@@ -271,7 +271,7 @@ func findWMItem(name string) []wmItem {
 func checkSetName(name string) bool {
 	funcName := "market.go: checkSetName"
 
-	db, err := sql.Open("sqlite3", "./warframe/database.db")
+	db, err := sql.Open("sqlite3", "../database.db")
 	if err != nil {
 		helpers.AddLog(funcName, "open database", err)
 		return false
