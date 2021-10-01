@@ -4,6 +4,7 @@ import (
 	"cdbot/helpers"
 	"cdbot/helpers/error_handlers"
 	"cdbot/warframe"
+	"cdbot/xidian"
 	"encoding/json"
 	"io/ioutil"
 	"log"
@@ -59,6 +60,10 @@ func receive(rw http.ResponseWriter, r *http.Request) {
 		config := helpers.LoadConfig()
 		if helpers.FindInI64Array(config.WFGroups, groupId) != -1 {
 			warframe.WFHandler(data)
+			return
+		}
+		if helpers.FindInI64Array(config.XDGroups, groupId) != -1 {
+			xidian.XDHandler(data)
 			return
 		}
 	}
