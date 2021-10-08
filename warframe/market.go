@@ -244,6 +244,7 @@ func findWMItem(name string) []wmItem {
 		helpers.AddLog(funcName, "open database", err)
 		return nil
 	}
+	defer error_handlers.CloseDatabase(db)
 	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME) LIKE LOWER(?)")
 	if err != nil {
 		helpers.AddLog(funcName, "prepare query", err)
@@ -276,6 +277,7 @@ func checkSetName(name string) bool {
 		helpers.AddLog(funcName, "open database", err)
 		return false
 	}
+	defer error_handlers.CloseDatabase(db)
 	prep, err := db.Prepare("SELECT * FROM WM_ITEMS WHERE LOWER(NAME)=LOWER(?)")
 	if err != nil {
 		helpers.AddLog(funcName, "prepare query", err)

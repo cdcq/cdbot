@@ -2,6 +2,7 @@ package warframe
 
 import (
 	"cdbot/helpers"
+	"cdbot/helpers/error_handlers"
 	"database/sql"
 )
 
@@ -13,6 +14,7 @@ func TenetResponse() string {
 		helpers.AddLog(funcName, "open database", err)
 		return ""
 	}
+	defer error_handlers.CloseDatabase(db)
 	prep, err := db.Prepare("SELECT CONTENT FROM WF_MISC WHERE NAME=?")
 	if err != nil {
 		helpers.AddLog(funcName, "prepare query", err)
@@ -42,6 +44,7 @@ func TenetUpdate(content string) error {
 		helpers.AddLog(funcName, "open database", err)
 		return err
 	}
+	defer error_handlers.CloseDatabase(db)
 	prep, err := db.Prepare("UPDATE WF_MISC SET CONTENT=? WHERE NAME=?")
 	if err != nil {
 		helpers.AddLog(funcName, "prepare query", err)

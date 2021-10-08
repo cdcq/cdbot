@@ -19,7 +19,7 @@ func XDHandler(data map[string]interface{}) {
 
 	res := ""
 	message := data["message"].(string)
-	if message == "黃历" {
+	if message == "黄历" {
 		res = CalenderResponse()
 	}
 

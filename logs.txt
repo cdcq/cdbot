@@ -1,8 +1,0 @@
-2021/10/01 17:28:09 loger.go:6: Error at market.go: checkSetName when prepare query:
-2021/10/01 17:28:09 loger.go:7: no such table: WM_ITEMS
-2021/10/01 17:28:09 loger.go:6: Error at market.go: findWMItem when prepare query:
-2021/10/01 17:28:09 loger.go:7: no such table: WM_ITEMS
-2021/10/01 18:23:18 loger.go:6: Error at tenet.go: TenetResponse when scan row:
-2021/10/01 18:23:18 loger.go:7: sql: expected 2 destination arguments in Scan, not 1
-2021/10/01 18:23:43 loger.go:6: Error at tenet.go: TenetResponse when scan row:
-2021/10/01 18:23:43 loger.go:7: sql: expected 2 destination arguments in Scan, not 1

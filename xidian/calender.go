@@ -18,7 +18,7 @@ type Words struct {
 func CalenderResponse() string {
 	funcName := "calender.go: CalenderResponse"
 
-	unixDay := time.Now().Unix() / (60 * 60 * 24)
+	unixDay := (time.Now().Unix() - 1633017600) / 86400
 	r := rand.New(rand.NewSource(unixDay))
 
 	words := Words{}
