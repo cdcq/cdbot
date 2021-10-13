@@ -230,7 +230,7 @@ func requireWMData(urlName string) []wmData {
 
 func findWMItem(name string) []models.WmItem {
 	var ret []models.WmItem
-	err := global.DATABASE.Model(&models.WmItem{}).Where("item_name LIKE ?", name).Find(&ret).Error
+	err := global.DATABASE.Model(&models.WmItem{}).Where("item_name LIKE ?", "%"+name+"%").Find(&ret).Error
 	if err != nil {
 		global.LOGGER.Warn("Not found WMItems.")
 		return nil
@@ -241,7 +241,7 @@ func findWMItem(name string) []models.WmItem {
 func checkSetName(name string) bool {
 	var item models.WmItem
 
-	if !errors.Is(global.DATABASE.Where("item_name = ?", name+"一套").
+	if errors.Is(global.DATABASE.Where("item_name = ?", name+"一套").
 		First(&item).Error, gorm.ErrRecordNotFound) {
 		return false
 	}

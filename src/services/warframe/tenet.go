@@ -9,7 +9,7 @@ import (
 
 func TenetResponse() string {
 	var item models.WfMisc
-	if !errors.Is(global.DATABASE.Where("name = ?", "tenet").First(&item).Error,
+	if errors.Is(global.DATABASE.Where("name = ?", "tenet").First(&item).Error,
 		gorm.ErrRecordNotFound) {
 		return ""
 	}

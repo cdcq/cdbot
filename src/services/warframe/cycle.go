@@ -33,7 +33,7 @@ func CycleResponse() string {
 
 	ret += "夜灵平野："
 	status, minute, second := getCetusTime(nowTime)
-	if status == 0 {
+	if status == 1 {
 		ret += "白昼"
 	} else {
 		ret += "黑夜"

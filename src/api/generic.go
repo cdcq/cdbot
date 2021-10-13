@@ -25,11 +25,13 @@ func GenericMessageHandler(ctx *gin.Context) {
 	for _, group := range global.CONFIG.WFGroups {
 		if group == req.GroupId {
 			WFHandler(ctx, req)
+			return
 		}
 	}
 	for _, group := range global.CONFIG.XDGroups {
 		if group == req.GroupId {
 			XDHandler(ctx, req)
+			return
 		}
 	}
 }

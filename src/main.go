@@ -20,7 +20,7 @@ func main() {
 	if err != nil {
 		log.Fatalln("Could not init router, exit...")
 	}
-	err = engine.Run(":8080")
+	err = engine.Run(":5701")
 	if err != nil {
 		log.Fatalln("Could not run server! exit...")
 	}
