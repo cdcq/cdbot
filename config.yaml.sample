@@ -1,0 +1,31 @@
+
+# zap logger configuration
+zap:
+  level: 'info'
+  format: 'console'
+  prefix: '[CDBOT] '
+  director: 'log'
+  link_name: 'latest_log'
+  show_line: true
+  encode_level: 'LowercaseColorLevelEncoder'
+  stacktrace_key: 'stacktrace'
+  log_in_console: true
+
+# mysql connect configuration
+database:
+  path: '127.0.0.1:3306'
+  config_models: 'parseTime=true'
+  db_name: 'cdbot'
+  username: 'cdbot'
+  password: 'sample-password'
+  max_idle_conns: 10
+  max_open_conns: 100
+  log_mode: false
+  log_zap: "warn"
+
+cq_http_addr: 'http://127.0.0.1:5700/send_msg'
+
+wf_groups:
+  - <group>
+xd_groups:
+  - <group>
