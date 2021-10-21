@@ -20,7 +20,6 @@ func BusinessmanResponse() string {
 	day := nowTime / 1440
 	hour := nowTime / 60 % 24
 	minute := nowTime % 60
-	ret += "剩余：" +
-		fmt.Sprintf("剩余 %02d 天 %02d 时 %02d 分", day, hour, minute)
+	ret += fmt.Sprintf("剩余 %02d 天 %02d 时 %02d 分", day, hour, minute)
 	return ret
 }
