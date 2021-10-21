@@ -4,7 +4,7 @@ WORKDIR $GOPATH/src/cdbot
 COPY go.mod .
 RUN GOPROXY="https://goproxy.cn" GO111MODULE=on go mod download -x
 COPY . .
-RUN CGO_ENABLED=0 go build -o ./main ./src/main.go
+RUN CGO_ENABLED=0 go build -o /opt/main ./src/main.go
 
 FROM debian:10
 RUN sed -i -r 's/(deb|security).debian.org/mirrors.ustc.edu.cn/g' /etc/apt/sources.list && \
