@@ -16,3 +16,10 @@
 
 # Others
 *.db
+
+main
+
+config.yaml
+docker-compose.yml
+
+.data/

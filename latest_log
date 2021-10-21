@@ -1,0 +1,5 @@
+[CDBOT] 2021/10/13 - 13:40:23.909	info	Initialized Zap logger.
+[CDBOT] 2021/10/13 - 13:40:23.909	info	
+===================================================================================
+ cdbot ===================================================================================
+[CDBOT] 2021/10/13 - 13:40:23.910	info	gorm	{"src": "/home/reverier/Code/Go/cdbot/src/initialize/database.go:43", "duration": "dial tcp 127.0.0.1:3306: connect: connection refused"}
