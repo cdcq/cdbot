@@ -45,6 +45,8 @@ func WFHandler(ctx *gin.Context, data requests.Message) {
 		res = warframe.CalenderResponse()
 	} else if message == "信条" {
 		res = warframe.TenetResponse()
+	} else if message == "奸商" {
+		res = warframe.BusinessmanResponse()
 	} else if len(message) > 13 && strings.HasPrefix(message, "信条更新\n") {
 		err := warframe.TenetUpdate(message[13:])
 		if err == nil {

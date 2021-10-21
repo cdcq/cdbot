@@ -18,7 +18,7 @@ func WMResponse(name string) string {
 	name = strings.Replace(name, " ", "", -1)
 	name = ProcessSpokenName(name)
 	if name == "name" {
-		nickNames, err := ioutil.ReadFile("./warframe/nick_names.yaml")
+		nickNames, err := ioutil.ReadFile("./src/services/warframe/nick_names.yaml")
 		if err != nil {
 			global.LOGGER.Warn(err.Error())
 			return "出错了 :("
@@ -65,14 +65,15 @@ func ProcessSpokenName(name string) string {
 	name = strings.ToLower(name)
 
 	var nickNames map[string][]string
-	yamlFile, _ := ioutil.ReadFile("./warframe/nick_names.yaml")
+	yamlFile, _ := ioutil.ReadFile("./src/services/warframe/nick_names.yaml")
 	_ = yaml.Unmarshal(yamlFile, &nickNames)
 	for key, value := range nickNames {
+		trueName := strings.ToLower(key)
 		for _, nickName := range value {
-			name = strings.Replace(name, nickName+"甲", key+"prime", -1)
-			name = strings.Replace(name, nickName, key+"prime", -1)
+			name = strings.Replace(name, nickName+"甲", trueName+"prime", -1)
+			name = strings.Replace(name, nickName, trueName+"prime", -1)
 		}
-		if name == strings.ToLower(key) {
+		if name == trueName {
 			name = name + "prime一套"
 			break
 		}
@@ -87,8 +88,11 @@ func ProcessSpokenName(name string) string {
 
 	name = strings.Replace(name, "prime", "p", -1)
 	name = strings.Replace(name, "pp", "p", -1)
+	if strings.Count(name, "zephyr") > 0 {
+		name = strings.Replace(name, "zephyr", "鸟", -1)
+	}
 	name = strings.Replace(name, "p", "prime", -1)
-
+	name = strings.Replace(name, "鸟", "zephyr", -1)
 	if checkSetName(name) {
 		name = name + "一套"
 	}

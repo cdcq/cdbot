@@ -20,7 +20,7 @@ func WMResponse(name string) string {
 	name = strings.Replace(name, " ", "", -1)
 	name = ProcessSpokenName(name)
 	if name == "name" {
-		nickNames, err := ioutil.ReadFile("./warframe/nick_names.yaml")
+		nickNames, err := ioutil.ReadFile("./src/warframe/nick_names.yaml")
 		if err != nil {
 			helpers.AddLog(funcName, "read nick_names.yaml", err)
 			return "出错了 :("
@@ -67,7 +67,7 @@ func ProcessSpokenName(name string) string {
 	name = strings.ToLower(name)
 
 	var nickNames map[string][]string
-	yamlFile, _ := ioutil.ReadFile("./warframe/nick_names.yaml")
+	yamlFile, _ := ioutil.ReadFile("./src/services/warframe/nick_names.yaml")
 	_ = yaml.Unmarshal(yamlFile, &nickNames)
 	for key, value := range nickNames {
 		for _, nickName := range value {

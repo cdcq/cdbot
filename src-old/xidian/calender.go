@@ -22,7 +22,7 @@ func CalenderResponse() string {
 	r := rand.New(rand.NewSource(unixDay))
 
 	words := Words{}
-	configFile, err := ioutil.ReadFile("./xidian/calender_words.yaml")
+	configFile, err := ioutil.ReadFile("./src/services/xidian/calender_words.yaml")
 	if err != nil {
 		helpers.AddLog(funcName, "read file", err)
 		return "Something Wrong. :("
